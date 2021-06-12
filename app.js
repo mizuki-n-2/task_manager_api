@@ -1,9 +1,51 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+const mysql = require("mysql");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const con = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+con.connect(function (err) {
+  if (err) throw err;
+  console.log("Connected");
+});
+
+// タスクの全取得
+app.get("/tasks", (req, res) => {
+  const sql = "select * from tasks;";
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+    res.json({
+      message: "get all tasks successfully!",
+      tasks: result
+    })
+  });
+});
+
+// タスクの新規作成
+app.post("/tasks", (req, res) => {
+  console.log(req.body)
+  const title = req.body.title;
+  const memo = req.body.memo;
+  const category = req.body.category;
+  const status = req.body.status;
+  const deadline = req.body.deadline;
+  const sql = `insert into tasks (title, memo, category, status, deadline) values ("${title}", "${memo}", "${category}", "${status}", "${deadline}");`;
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+  })
+  res.send('created successfully!')
 });
 
 app.listen(port, () => {
