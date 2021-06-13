@@ -79,6 +79,17 @@ app.patch("/tasks/:id", (req, res) => {
   res.send("updated successfully!");
 })
 
+// タスクの削除
+app.delete("/tasks/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(id)
+  const sql = `delete from tasks where id = ${id}`;
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+  })
+  res.send("deleted successfully!");
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
