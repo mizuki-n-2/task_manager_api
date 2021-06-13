@@ -48,6 +48,20 @@ app.post("/tasks", (req, res) => {
   res.send('created successfully!')
 });
 
+// タスクの一件取得
+app.get("/tasks/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(id)
+  const sql = `select * from tasks where id = ${id}`
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    res.json({
+      message: "get task successfully!",
+      tasks: result
+    })
+  })
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
