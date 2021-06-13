@@ -62,6 +62,23 @@ app.get("/tasks/:id", (req, res) => {
   })
 })
 
+// タスクの編集
+app.patch("/tasks/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(id)
+  console.log(req.body)
+  const title = req.body.title;
+  const memo = req.body.memo;
+  const category = req.body.category;
+  const status = req.body.status;
+  const deadline = req.body.deadline;
+  const sql = `update tasks set title="${title}", memo="${memo}", category="${category}", status="${status}", deadline="${deadline}" where id = ${id}`;
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+  })
+  res.send("updated successfully!");
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
